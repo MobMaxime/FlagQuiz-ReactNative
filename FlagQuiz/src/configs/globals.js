@@ -7,7 +7,7 @@ class Globals{
 
     static options1=['Option1','Option2','Option3'];
     static options2=['Option1','Option2','Option3','Option4','Option5','Option6'];
-    static options3=['Algeria','Angola','Benin','Botswana','Burkina_Faso','Burundi','C_African_Rep','Cameroon','Cape_Verde'];
+    static options3=['Algeria','Angola','Benin','Botswana','Burkina_Faso','Burundi','African_Rep','Cameroon','Cape_Verde'];
     
 
     static FlagsSource = [
@@ -29,34 +29,34 @@ class Globals{
         },
         {
             source:Flag5,
-            answer:'Burkina_Faso',
-        },
-        {
-            source:Flag6,
             answer:'Burundi',
         },
         {
-            source:Flag7,
-            answer:'C_African_Rep',
-        },
-        {
-            source:Flag8,
+            source:Flag6,
             answer:'Cameroon',
         },
         {
+            source:Flag7,
+            answer:'Chad',
+        },
+        {
+            source:Flag8,
+            answer:'Comoros',
+        },
+        {
             source:Flag9,
-            answer:'Algeria',
+            answer:'Djibouti',
         },
         {
             source:Flag10,
-            answer:'Algeria',
+            answer:'Egypt',
         },
     ];
 
     static correctFlag(level) 
     {
-        var correctFlagValue = Math.floor(Math.random()*(level*3))+ 1;
-        alert("Hello" + correctFlagValue);
+        var correctFlagValue = Math.floor(Math.random()*(level*3))+1;
+        alert(correctFlagValue)
         return correctFlagValue;
     }
 
