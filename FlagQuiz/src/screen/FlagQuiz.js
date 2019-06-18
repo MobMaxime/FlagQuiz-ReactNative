@@ -5,18 +5,25 @@ import bgImage from '../../assets/images/background.jpg'
 import strings from '../configs/strings';
 import globals from '../configs/globals';
 import { FlatGrid } from 'react-native-super-grid';
+import {Flag1,Flag2,Flag3,Flag4,Flag5,Flag6,Flag7,Flag8,Flag9,Flag10} from '../configs/images';
+
 
 export default class FlagQuiz extends Component{
-
-static imgFlag=[];
-
+    
     constructor(props){
         super(props);
+        
         this.state={
             Qno:1,
             totalQ:10,
             data:[],
+            imgFlag:[Flag1,Flag2,Flag3,Flag4,Flag5,Flag6,Flag7,Flag8,Flag9,Flag10],
+            isAnswered:true,
+            FlagData:globals.shuffleArray(globals.FlagsSource,globals.currentLevel),
+            CorrectFlag: globals.correctFlag(globals.currentLevel)
         }
+        this.state.imgFlag.sort(() => 0.5 - Math.random());
+        
         this.getOptions();
     }
     static navigationOptions =({navigation})=>{
@@ -35,18 +42,13 @@ static imgFlag=[];
             //headerLeft:null,
         }
     }
+    
     componentDidMount()
     {
         
     }
     componentWillMount(){
-        imgFlag =[
-            '../../assets/images/map/1.png',
-            '../../assets/images/map/2.png',
-            '../../assets/images/map/3.png',
-            '../../assets/images/map/4.png',
-            '../../assets/images/map/5.png',
-        ] 
+        
     }
     getOptions=()=>{
         let level = globals.currentLevel;
@@ -55,42 +57,48 @@ static imgFlag=[];
         else if(level==2)
             this.state.data=globals.options2;
         else if(level==3)
-            this.state.data=globals.options3;
+            this.state.data=globals.options3.sort(() => 0.5 - Math.random());
     }
     render(){
         
         const {data} = this.state;
         const {Qno} = this.state;
         const {totalQ} = this.state;
+        const {imgFlag} = this.state;
         if(Qno>totalQ)
         {
             alert('Quiz Finished....');
             this.props.navigation.goBack();
         }
-        let imgPath = '../../assets/images/map/' + Qno + '.png';
+        //let imgPath = require('../../assets/images/map/' + Qno + '.png');
         return(
             <ImageBackground source={bgImage} style={styles.bgImageStyle}>
                 <View style={styles.Container}>
                     <Text style={styles.textStyle}>{strings.txt_question} {Qno} {'Of'} {totalQ}</Text>
-                    <Image style={styles.imageStyle} source={require(imgPath)}/>
+                    <Image style={styles.imageStyle} source={this.state.FlagData[this.state.CorrectFlag-1].source}/>
                     <Text style={styles.textStyle}>{strings.txt_instruction}</Text>
                     <View>
                         <FlatGrid
                             itemDimension={100}
-                            items={data}
+                            items={this.state.FlagData}
                             renderItem={({ item, index }) => (
                                 <TouchableHighlight style={styles.buttonContainer} onPress={()=>this.setState({Qno: Qno+1})}> 
-                                    <Text style={styles.buttonText}>{item}</Text>
+                                    <Text style={styles.buttonText}>{item.answer}</Text>
                                 </TouchableHighlight>
                             )}
                         />
                     </View>
+                    <View style={{position:'absolute',bottom:0}}>
+                        <Text style={styles.textStyle}>Status</Text>               
+                    </View>
+                    
                 </View>
             </ImageBackground>
 
         );
     }
 }
+
 
 const styles = StyleSheet.create({
     Container:{
