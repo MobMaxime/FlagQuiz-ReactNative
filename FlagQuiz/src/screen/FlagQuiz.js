@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Image,View,Button,Text,StyleSheet,TouchableHighlight,ImageBackground,FlatList} from 'react-native';
+import {Image,View,Button,Text,StyleSheet,TouchableHighlight,ImageBackground,FlatList,Alert} from 'react-native';
 import colors from '../configs/colors'
 import bgImage from '../../assets/images/background.jpg'
 import strings from '../configs/strings';
@@ -7,6 +7,9 @@ import globals from '../configs/globals';
 import { FlatGrid } from 'react-native-super-grid';
 
 export default class FlagQuiz extends Component{
+
+static imgFlag=[];
+
     constructor(props){
         super(props);
         this.state={
@@ -32,6 +35,19 @@ export default class FlagQuiz extends Component{
             //headerLeft:null,
         }
     }
+    componentDidMount()
+    {
+        
+    }
+    componentWillMount(){
+        imgFlag =[
+            '../../assets/images/map/1.png',
+            '../../assets/images/map/2.png',
+            '../../assets/images/map/3.png',
+            '../../assets/images/map/4.png',
+            '../../assets/images/map/5.png',
+        ] 
+    }
     getOptions=()=>{
         let level = globals.currentLevel;
         if(level==1)
@@ -46,18 +62,24 @@ export default class FlagQuiz extends Component{
         const {data} = this.state;
         const {Qno} = this.state;
         const {totalQ} = this.state;
+        if(Qno>totalQ)
+        {
+            alert('Quiz Finished....');
+            this.props.navigation.goBack();
+        }
+        let imgPath = '../../assets/images/map/' + Qno + '.png';
         return(
             <ImageBackground source={bgImage} style={styles.bgImageStyle}>
                 <View style={styles.Container}>
                     <Text style={styles.textStyle}>{strings.txt_question} {Qno} {'Of'} {totalQ}</Text>
-                    <Image style={styles.imageStyle} source={require('../../assets/images/Africa/Africa-Algeria.png')}/>
+                    <Image style={styles.imageStyle} source={require(imgPath)}/>
                     <Text style={styles.textStyle}>{strings.txt_instruction}</Text>
                     <View>
                         <FlatGrid
                             itemDimension={100}
                             items={data}
                             renderItem={({ item, index }) => (
-                                <TouchableHighlight style={styles.buttonContainer}> 
+                                <TouchableHighlight style={styles.buttonContainer} onPress={()=>this.setState({Qno: Qno+1})}> 
                                     <Text style={styles.buttonText}>{item}</Text>
                                 </TouchableHighlight>
                             )}

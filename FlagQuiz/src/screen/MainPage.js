@@ -15,6 +15,7 @@ export default class MainPage extends Component{
 
     static navigationOptions = {
         title:strings.txt_main_title,
+        
         headerStyle:{
             backgroundColor:colors.ThemeBgColor,
         },
