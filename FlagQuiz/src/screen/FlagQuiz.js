@@ -1,11 +1,10 @@
 import React,{Component} from 'react';
-import {View,Button,Text,StyleSheet,TouchableHighlight,ImageBackground,FlatList,Alert,Animated,Easing} from 'react-native';
+import {View,Text,StyleSheet,TouchableHighlight,ImageBackground} from 'react-native';
 import colors from '../configs/colors'
 import bgImage from '../../assets/images/background.jpg'
 import strings from '../configs/strings';
 import globals from '../configs/globals';
 import { FlatGrid } from 'react-native-super-grid';
-import {Flag1,Flag2,Flag3,Flag4,Flag5,Flag6,Flag7,Flag8,Flag9,Flag10} from '../configs/images';
 import {Image} from 'react-native-animatable';
 
 export default class FlagQuiz extends Component{
@@ -19,13 +18,11 @@ export default class FlagQuiz extends Component{
             isSelect:false,
             response:'',
             resColor:'',
-            imgFlag:[Flag1,Flag2,Flag3,Flag4,Flag5,Flag6,Flag7,Flag8,Flag9,Flag10],
             isAnswered:true,
             FlagData:globals.shuffleArray(globals.FlagsSource,globals.currentLevel),
             CorrectFlag: globals.correctFlag(globals.currentLevel),
             animationRef:null,
         }
-        this.state.imgFlag.sort(() => 0.5 - Math.random());
         
         //this.getOptions();
     }
@@ -53,12 +50,6 @@ export default class FlagQuiz extends Component{
     componentWillMount(){
         
     }
-    handleAnimation = () => {
-        Animated.timing(this.animatedValue, {toValue: 1, duration: 1000, easing: Easing.linear, useNativeDriver: true}).start(); 
-        //   setTimeout(() => {
-        //     Animated.loop.stop();
-        // }, 1000);
-      }
     checkFlag=(value)=>
     {
         if(this.state.FlagData[this.state.CorrectFlag].answer==value)
@@ -89,7 +80,6 @@ export default class FlagQuiz extends Component{
         
         const {Qno} = this.state;
         const {totalQ} = this.state;
-        const {imgFlag} = this.state;
         const {FlagData} = this.state;
         const {CorrectFlag}= this.state;
         if(Qno>totalQ)
@@ -97,7 +87,6 @@ export default class FlagQuiz extends Component{
             alert('Quiz Finished....');
             this.props.navigation.goBack();
         }
-        //let imgPath = require('../../assets/images/map/' + Qno + '.png');
         return(
             <ImageBackground source={bgImage} style={styles.bgImageStyle}>
                 <View style={styles.Container}>

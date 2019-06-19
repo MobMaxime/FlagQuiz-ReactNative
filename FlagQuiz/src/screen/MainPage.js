@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Button,Text,StyleSheet,TouchableOpacity,ImageBackground,TouchableHighlight} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,ImageBackground,StatusBar} from 'react-native';
 import colors from '../configs/colors'
 import bgImage from '../../assets/images/background.jpg'
 import strings from '../configs/strings';
@@ -30,7 +30,7 @@ export default class MainPage extends Component{
         headerTintColor:colors.ThemFontColor,
 
     } 
-    toggleModal = () => {
+    toggleLevelModal = () => {
         this.setState({ isModalVisible: !this.state.isModalVisible });
     };
     shareApp=()=>{
@@ -50,9 +50,9 @@ export default class MainPage extends Component{
     renderLevelPopUp = () => (
         <View style={styles.modalContainer} >  
             <Text style={styles.titleTextStyle} >{strings.txt_level}</Text>                          
-            <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=1,this.toggleModal()}}>{strings.txt_easy}</Text>
-            <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=2,this.toggleModal()}}>{strings.txt_medium}</Text>
-            <Text style={[styles.textStyle]} onPress={()=>{globals.currentLevel=3,this.toggleModal()}}>{strings.txt_deficult}</Text>
+            <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=1,this.toggleLevelModal()}}>{strings.txt_easy}</Text>
+            <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=2,this.toggleLevelModal()}}>{strings.txt_medium}</Text>
+            <Text style={[styles.textStyle]} onPress={()=>{globals.currentLevel=3,this.toggleLevelModal()}}>{strings.txt_deficult}</Text>
         </View>
       );
     renderAboutPopUp = () => (
@@ -63,38 +63,39 @@ export default class MainPage extends Component{
         </View>
       );
     render(){
+        const AppStatusBar = () => (<StatusBar backgroundColor={colors.ButtonBgColor} translucent={false} barStyle="light-content" />);
         return(
             <ImageBackground source={bgImage} style={styles.bgImageStyle}>
+                <AppStatusBar/>
                 <View style={styles.buttonContainer} >
 
-                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.props.navigation.navigate('FlagQuiz')} > 
+                    <TouchableOpacity activeOpacity={true} style={styles.buttonStyle} onPress={()=>this.props.navigation.navigate('FlagQuiz')} > 
                         <Text style={styles.buttonText}>{strings.btn_start}</Text>
                     </TouchableOpacity> 
                     <Modal 
+                        onBackdropPress={()=>this.toggleLevelModal()}
                         transparent={true} 
                         isVisible={this.state.isModalVisible} >                        
                         {this.renderLevelPopUp()}
                     </Modal>
 
                     <Modal 
+                        onBackdropPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}
                         transparent={true} 
                         isVisible={this.state.isAboutUsVisible} >                        
                         {this.renderAboutPopUp()}
                     </Modal>
 
-                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.setState({ isModalVisible: !this.state.isModalVisible })}> 
+                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle} onPress={()=>this.setState({ isModalVisible: !this.state.isModalVisible })}> 
                         <Text style={styles.buttonText}>{strings.btn_level}</Text>
                     </TouchableOpacity>  
-                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}> 
+                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}> 
                         <Text style={styles.buttonText}>{strings.btn_about_us}</Text>
                     </TouchableOpacity>  
-                    {/* <TouchableOpacity style={styles.buttonStyle}> 
-                        <Text style={styles.buttonText}>{strings.btn_rate_us}</Text>
-                    </TouchableOpacity>   */}
-                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
+                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
                         <Text style={styles.buttonText}>{strings.btn_share}</Text>
                     </TouchableOpacity>  
-                    <TouchableOpacity style={styles.buttonStyle}> 
+                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle}> 
                         <Text style={styles.buttonText}>{strings.btn_exit}</Text>
                     </TouchableOpacity>  
                 </View>
