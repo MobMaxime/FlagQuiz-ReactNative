@@ -6,6 +6,7 @@ import strings from '../configs/strings';
 import globals from '../configs/globals';
 import { FlatGrid } from 'react-native-super-grid';
 import {Image} from 'react-native-animatable';
+import Modal from "react-native-modal";
 
 export default class FlagQuiz extends Component{
     
@@ -26,7 +27,7 @@ export default class FlagQuiz extends Component{
             FlagData:globals.shuffleArray(globals.FlagsSource,globals.currentLevel),
             CorrectFlag: globals.correctFlag(globals.currentLevel),
             animationRef:null,
-            
+            isShowResult:false
         }
         
         //this.getOptions();
@@ -75,7 +76,7 @@ export default class FlagQuiz extends Component{
     }
     setFlag=()=>
     {
-        if(this.state.Qno>=this.state.totalQ)
+            if(this.state.Qno>=this.state.totalQ)
             {
                 this.displayResult();
                 //this.props.navigation.goBack();
@@ -95,7 +96,17 @@ export default class FlagQuiz extends Component{
     {
         this.guesses = this.correct + this.incorrect;
         this.accuracy = ((this.correct/this.guesses) * 100).toFixed(2) ;
+        this.setState({
+            isShowResult:true
+        });
     }
+    renderResultPopUp = () => (
+        <View style={styles.modalContainer} >  
+            <Text style={styles.titleTextStyle} >{strings.txt_quiz_over}</Text>     
+            <Text style={styles.textStyle} >{`You made ${this.guesses} guesses. \nAccuracy - ${this.accuracy} %\n\nThank you for Playing :)`}</Text> 
+            <Text style={[styles.textStyle,{alignSelf:'center'}]} onPress={()=>{this.setState({ isShowResult: !this.state.isShowResult }); this.props.navigation.goBack();} }>{strings.txt_ok}</Text>                       
+        </View>
+      );
     render(){
         
         const {Qno} = this.state;
@@ -123,11 +134,15 @@ export default class FlagQuiz extends Component{
                     <View style={styles.bottomView}>
                             {(this.state.isSelect) && <Text style={{fontFamily:globals.FONT_Bold,fontSize:30,color:this.state.resColor}}>
                                                         {this.state.response}</Text> }  
-                    </View>
-                                      
+                    </View>  
                 </View>
+                <Modal 
+                    onBackdropPress={()=>this.setState({ isShowResult: !this.state.isShowResult })}
+                    transparent={true} 
+                    isVisible={this.state.isShowResult} >                        
+                    {this.renderResultPopUp()}
+                </Modal>   
             </ImageBackground>
-
         );
     }
 }
@@ -182,4 +197,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 50
       },
+      titleTextStyle:{
+        fontFamily:globals.FONT_Bold,
+        fontSize:40,
+        padding:10,
+    },
+    modalContainer:{
+        backgroundColor:'#FFFF',
+        padding: 10,
+        marginHorizontal:10,
+        borderRadius: 10,  
+    }
 });

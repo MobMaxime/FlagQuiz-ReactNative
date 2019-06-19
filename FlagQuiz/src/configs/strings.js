@@ -21,6 +21,8 @@ const strings = new LocalizedStrings({
         txt_deficult:'DEFICULT',
         txt_ok:'OK',
         txt_of:'Of',
+
+        txt_quiz_over:'QUIZ OVER',
     }
 });
 

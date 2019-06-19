@@ -86,16 +86,16 @@ export default class MainPage extends Component{
                         {this.renderAboutPopUp()}
                     </Modal>
 
-                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle} onPress={()=>this.setState({ isModalVisible: !this.state.isModalVisible })}> 
+                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.setState({ isModalVisible: !this.state.isModalVisible })}> 
                         <Text style={styles.buttonText}>{strings.btn_level}</Text>
                     </TouchableOpacity>  
-                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}> 
+                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}> 
                         <Text style={styles.buttonText}>{strings.btn_about_us}</Text>
                     </TouchableOpacity>  
-                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
+                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
                         <Text style={styles.buttonText}>{strings.btn_share}</Text>
                     </TouchableOpacity>  
-                    <TouchableOpacity activeOpacity={true}  style={styles.buttonStyle}> 
+                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle}> 
                         <Text style={styles.buttonText}>{strings.btn_exit}</Text>
                     </TouchableOpacity>  
                 </View>
