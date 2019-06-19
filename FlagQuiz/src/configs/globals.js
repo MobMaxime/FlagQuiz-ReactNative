@@ -9,7 +9,7 @@ class Globals{
     static options2=['Option1','Option2','Option3','Option4','Option5','Option6'];
     static options3=['Algeria','Angola','Benin','Botswana','Burkina_Faso','Burundi','African_Rep','Cameroon','Cape_Verde'];
     
-
+    static aboutUs = 'Mobmaxime is an established Web and Mobile Application Development Company delivering Xamarin, Appcelerator, Native android and iOS applications';
     static FlagsSource = [
         {
             source:Flag1,
@@ -55,8 +55,8 @@ class Globals{
 
     static correctFlag(level) 
     {
-        var correctFlagValue = Math.floor(Math.random()*(level*3))+1;
-        alert(correctFlagValue)
+        var correctFlagValue = Math.floor(Math.random()*(level*3));
+        //alert(correctFlagValue)
         return correctFlagValue;
     }
 
@@ -72,7 +72,7 @@ class Globals{
         var arr = []
         while(arr.length < (level * 3 ))
         {
-            var r = Math.floor(Math.random()*10) + 1;
+            var r = Math.floor(Math.random()*array.length) + 1;
             if(arr.indexOf(r) === -1) arr.push(r);
         }
         

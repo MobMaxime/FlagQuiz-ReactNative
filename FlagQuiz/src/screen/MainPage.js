@@ -1,18 +1,21 @@
 import React,{Component} from 'react';
-import {View,Button,Text,StyleSheet,TouchableOpacity,ImageBackground,Modal,TouchableHighlight} from 'react-native';
+import {View,Button,Text,StyleSheet,TouchableOpacity,ImageBackground,TouchableHighlight} from 'react-native';
 import colors from '../configs/colors'
 import bgImage from '../../assets/images/background.jpg'
 import strings from '../configs/strings';
 import globals from '../configs/globals';
-import {
-    Menu,
-    MenuOptions,
-    MenuOption,
-    MenuTrigger,
-  } from 'react-native-popup-menu';
+import Modal from "react-native-modal";
+import { Share } from 'react-native';
 
 export default class MainPage extends Component{
-
+    constructor(props)
+    {
+        super(props);
+        this.state={
+            isModalVisible:false,
+            isAboutUsVisible:false,
+        }
+    }
     static navigationOptions = {
         title:strings.txt_main_title,
         
@@ -27,44 +30,68 @@ export default class MainPage extends Component{
         headerTintColor:colors.ThemFontColor,
 
     } 
-    state={
-        modalVisible:false,
+    toggleModal = () => {
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+    };
+    shareApp=()=>{
+        Share.share({
+            message: 'Try this For Learn React-Native',
+            url: 'https://github.com/MobMaxime/FlagQuiz-ReactNative',
+            title: 'FlagQuiz'
+          }, {
+            // Android only:
+            dialogTitle: 'Share FlagQuiz',
+            // iOS only:
+            excludedActivityTypes: [
+              'com.apple.UIKit.activity.PostToTwitter'
+            ]
+          })
     }
-    setModalVisible(visible) {
-        this.setState({modalVisible: visible});
-      }
-
+    renderLevelPopUp = () => (
+        <View style={styles.modalContainer} >  
+            <Text style={styles.titleTextStyle} >{strings.txt_level}</Text>                          
+            <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=1,this.toggleModal()}}>{strings.txt_easy}</Text>
+            <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=2,this.toggleModal()}}>{strings.txt_medium}</Text>
+            <Text style={[styles.textStyle]} onPress={()=>{globals.currentLevel=3,this.toggleModal()}}>{strings.txt_deficult}</Text>
+        </View>
+      );
+    renderAboutPopUp = () => (
+        <View style={styles.modalContainer} >  
+            <Text style={styles.titleTextStyle} >{strings.txt_about_us}</Text>     
+            <Text style={styles.textStyle} >{globals.aboutUs}</Text> 
+            <Text style={[styles.textStyle,{alignSelf:'center'}]} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}>{strings.txt_ok}</Text>                       
+        </View>
+      );
     render(){
         return(
             <ImageBackground source={bgImage} style={styles.bgImageStyle}>
                 <View style={styles.buttonContainer} >
+
                     <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.props.navigation.navigate('FlagQuiz')} > 
                         <Text style={styles.buttonText}>{strings.btn_start}</Text>
                     </TouchableOpacity> 
+                    <Modal 
+                        transparent={true} 
+                        isVisible={this.state.isModalVisible} >                        
+                        {this.renderLevelPopUp()}
+                    </Modal>
 
-                    <Menu style={{alignItems:'center',justifyContent:'center',borderRadius:20}} >
-                        <MenuTrigger>
-                            <View style={styles.buttonStyle}> 
-                                <Text style={styles.buttonText}>{strings.btn_level}</Text>
-                            </View>  
-                        </MenuTrigger>
-                        <MenuOptions>
-                            <MenuOption  text='Easy' onSelect={()=>globals.currentLevel=1} />
-                            <MenuOption text='Medium' onSelect={()=>globals.currentLevel=2} />
-                            <MenuOption text='Dificult' onSelect={()=>globals.currentLevel=3}  />
-                        </MenuOptions>
-                    </Menu>
+                    <Modal 
+                        transparent={true} 
+                        isVisible={this.state.isAboutUsVisible} >                        
+                        {this.renderAboutPopUp()}
+                    </Modal>
 
-                    {/* <TouchableOpacity style={styles.buttonStyle}> 
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.setState({ isModalVisible: !this.state.isModalVisible })}> 
                         <Text style={styles.buttonText}>{strings.btn_level}</Text>
-                    </TouchableOpacity>   */}
-                    <TouchableOpacity style={styles.buttonStyle}> 
+                    </TouchableOpacity>  
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}> 
                         <Text style={styles.buttonText}>{strings.btn_about_us}</Text>
                     </TouchableOpacity>  
-                    <TouchableOpacity style={styles.buttonStyle}> 
+                    {/* <TouchableOpacity style={styles.buttonStyle}> 
                         <Text style={styles.buttonText}>{strings.btn_rate_us}</Text>
-                    </TouchableOpacity>  
-                    <TouchableOpacity style={styles.buttonStyle}> 
+                    </TouchableOpacity>   */}
+                    <TouchableOpacity style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
                         <Text style={styles.buttonText}>{strings.btn_share}</Text>
                     </TouchableOpacity>  
                     <TouchableOpacity style={styles.buttonStyle}> 
@@ -102,26 +129,22 @@ const styles = StyleSheet.create({
         color:colors.ThemFontColor,
         fontFamily:globals.FONT_Bold,
         fontSize:30,
-    }
+    },
+    textStyle:{
+        fontFamily:globals.FONT_Bold,
+        fontSize:30,
+        marginLeft:20,
+        padding:10,
+    },
+    titleTextStyle:{
+        fontFamily:globals.FONT_Bold,
+        fontSize:40,
+        padding:10,
+    },
+    modalContainer:{
+        backgroundColor:'#FFFF',
+        padding: 10,
+        marginHorizontal:10,
+        borderRadius: 10,  
+    },
 });
-
-{/* <Modal
-                    animationType="slide"
-                    transparent={false}
-                    visible={this.state.modalVisible}
-                    onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
-                    }}>
-                    <View style={{marginTop: 22}}>
-                        <View>
-                            <Text>Hello World!</Text>
-
-                            <TouchableHighlight
-                                onPress={() => {
-                                this.setModalVisible(!this.state.modalVisible);
-                                }}>
-                                <Text>Hide Modal</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </Modal> */}

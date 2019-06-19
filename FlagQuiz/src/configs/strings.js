@@ -13,7 +13,13 @@ const strings = new LocalizedStrings({
         btn_exit:'EXIT',
 
         txt_question:'Question',
-        txt_instruction:'Guess The Country'
+        txt_instruction:'Guess The Country',
+        txt_about_us:'ABOUT MOBMAXIME',
+        txt_level:'LEVEL',
+        txt_easy:'EASY',
+        txt_medium:'MEDIUM',
+        txt_deficult:'DEFICULT',
+        txt_ok:'OK'
     }
 });
 
