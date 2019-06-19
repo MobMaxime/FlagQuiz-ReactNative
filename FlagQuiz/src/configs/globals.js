@@ -4,11 +4,6 @@ class Globals{
     
     static FONT_Bold = Platform.OS === 'ios' ? 'AmaticSC-Bold' : 'AmaticSCBold';
     static currentLevel=1;
-
-    static options1=['Option1','Option2','Option3'];
-    static options2=['Option1','Option2','Option3','Option4','Option5','Option6'];
-    static options3=['Algeria','Angola','Benin','Botswana','Burkina_Faso','Burundi','African_Rep','Cameroon','Cape_Verde'];
-    
     static aboutUs = 'Mobmaxime is an established Web and Mobile Application Development Company delivering Xamarin, Appcelerator, Native android and iOS applications';
     static FlagsSource = [
         {

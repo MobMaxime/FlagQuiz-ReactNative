@@ -11,9 +11,13 @@ export default class FlagQuiz extends Component{
     
     constructor(props){
         super(props);
+        this.correct=0;
+        this.incorrect=0;
+        this.guesses=0;
+        this.accuracy=0;
         this.state={
             Qno:1,
-            totalQ:10,
+            totalQ:10,        
             data:[],
             isSelect:false,
             response:'',
@@ -22,6 +26,7 @@ export default class FlagQuiz extends Component{
             FlagData:globals.shuffleArray(globals.FlagsSource,globals.currentLevel),
             CorrectFlag: globals.correctFlag(globals.currentLevel),
             animationRef:null,
+            
         }
         
         //this.getOptions();
@@ -52,45 +57,56 @@ export default class FlagQuiz extends Component{
     }
     checkFlag=(value)=>
     {
-        if(this.state.FlagData[this.state.CorrectFlag].answer==value)
-        {
-            this.setState({isSelect:true,response:'Correct',resColor:'green'});
-            setTimeout(() => {
-                this.setFlag();
-            }, 1000);
-            
-        }   
-        else
-        {
-            this.setState({isSelect:true,response:'InCorrect',resColor:'red'});
-            this.state.animationRef.shake();
-        }             
+                if(this.state.FlagData[this.state.CorrectFlag].answer==value)
+                {
+                    this.setState({isSelect:true,response:'Correct',resColor:'green'});
+                    setTimeout(() => {
+                        this.setFlag();
+                    }, 500);
+                    this.correct=this.correct+1;
+                }   
+                else
+                {
+                    this.setState({isSelect:true,response:'InCorrect',resColor:'red'});
+                    this.state.animationRef.shake();
+                    this.incorrect=this.incorrect+1;
+                } 
+                   
     }
     setFlag=()=>
     {
-        this.setState({
-            Qno: this.state.Qno+1,
-            FlagData:globals.shuffleArray(globals.FlagsSource,globals.currentLevel),
-            CorrectFlag: globals.correctFlag(globals.currentLevel),
-            isSelect:false,
-        });
+        if(this.state.Qno>=this.state.totalQ)
+            {
+                this.displayResult();
+                //this.props.navigation.goBack();
+            } 
+            else
+            {
+                this.setState({
+                    Qno: this.state.Qno+1,
+                    FlagData:globals.shuffleArray(globals.FlagsSource,globals.currentLevel),
+                    CorrectFlag: globals.correctFlag(globals.currentLevel),
+                    isSelect:false,
+                });
+            }
+       
     }
-
+    displayResult()
+    {
+        this.guesses = this.correct + this.incorrect;
+        this.accuracy = ((this.correct/this.guesses) * 100).toFixed(2) ;
+    }
     render(){
         
         const {Qno} = this.state;
         const {totalQ} = this.state;
         const {FlagData} = this.state;
         const {CorrectFlag}= this.state;
-        if(Qno>totalQ)
-        {
-            alert('Quiz Finished....');
-            this.props.navigation.goBack();
-        }
+        
         return(
             <ImageBackground source={bgImage} style={styles.bgImageStyle}>
                 <View style={styles.Container}>
-                    <Text style={styles.textStyle}>{strings.txt_question} {Qno} {'Of'} {totalQ}</Text>
+                    <Text style={styles.textStyle}>{strings.txt_question} {Qno} {strings.txt_of} {totalQ}</Text>
                     <Image style={styles.imageStyle} ref={ref=>(this.state.animationRef=ref)}  duration={2000} source={FlagData[CorrectFlag].source}/>
                     <Text style={styles.textStyle}>{strings.txt_instruction}</Text>
                     <View style={{height:200}}>

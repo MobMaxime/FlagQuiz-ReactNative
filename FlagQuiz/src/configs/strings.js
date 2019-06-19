@@ -19,7 +19,8 @@ const strings = new LocalizedStrings({
         txt_easy:'EASY',
         txt_medium:'MEDIUM',
         txt_deficult:'DEFICULT',
-        txt_ok:'OK'
+        txt_ok:'OK',
+        txt_of:'Of',
     }
 });
 
