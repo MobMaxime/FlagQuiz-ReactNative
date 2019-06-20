@@ -1,12 +1,15 @@
 import React,{Component} from 'react';
-import {View,Text,StyleSheet,TouchableOpacity,ImageBackground,StatusBar} from 'react-native';
+import {Platform,View,Text,StyleSheet,TouchableOpacity,ImageBackground,StatusBar,BackAndroid} from 'react-native';
 import colors from '../configs/colors'
 import bgImage from '../../assets/images/background.jpg'
 import strings from '../configs/strings';
 import globals from '../configs/globals';
 import Modal from "react-native-modal";
 import { Share } from 'react-native';
+import {Content, Container} from 'native-base';
+import allStyles from './styles';
 
+const {bgImageStyle,modalContainer,titleTextStyle,contentView,buttonText} = allStyles;
 export default class MainPage extends Component{
     constructor(props)
     {
@@ -23,7 +26,7 @@ export default class MainPage extends Component{
             backgroundColor:colors.ThemeBgColor,
         },
         headerTitleStyle: {
-          fontWeight: 'bold',
+          fontWeight: undefined,
           fontFamily:globals.FONT_Bold,
           fontSize:30,
         },
@@ -47,59 +50,64 @@ export default class MainPage extends Component{
             ]
           })
     }
+    exitApp = ()=>{
+        if(Platform.OS === 'android')
+            BackAndroid.exitApp();
+    }
     renderLevelPopUp = () => (
-        <View style={styles.modalContainer} >  
-            <Text style={styles.titleTextStyle} >{strings.txt_level}</Text>                          
+        <View style={modalContainer} >  
+            <Text style={titleTextStyle} >{strings.txt_level}</Text>                          
             <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=1,this.toggleLevelModal()}}>{strings.txt_easy}</Text>
             <Text style={styles.textStyle} onPress={()=>{globals.currentLevel=2,this.toggleLevelModal()}}>{strings.txt_medium}</Text>
             <Text style={[styles.textStyle]} onPress={()=>{globals.currentLevel=3,this.toggleLevelModal()}}>{strings.txt_deficult}</Text>
         </View>
       );
     renderAboutPopUp = () => (
-        <View style={styles.modalContainer} >  
-            <Text style={styles.titleTextStyle} >{strings.txt_about_us}</Text>     
+        <View style={modalContainer} >  
+            <Text style={titleTextStyle} >{strings.txt_about_us}</Text>     
             <Text style={styles.textStyle} >{globals.aboutUs}</Text> 
             <Text style={[styles.textStyle,{alignSelf:'center'}]} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}>{strings.txt_ok}</Text>                       
         </View>
       );
-    render(){
+    render(){        
         const AppStatusBar = () => (<StatusBar backgroundColor={colors.ButtonBgColor} translucent={false} barStyle="light-content" />);
         return(
-            <ImageBackground source={bgImage} style={styles.bgImageStyle}>
+            <ImageBackground source={bgImage} style={bgImageStyle}>
                 <AppStatusBar/>
-                <View style={styles.buttonContainer} >
+                    <Content contentContainerStyle={styles.buttonContainer}>
+                        <View style={contentView}>
+                            <TouchableOpacity activeOpacity={0.8} style={styles.buttonStyle} onPress={()=>this.props.navigation.navigate('FlagQuiz')} > 
+                                <Text style={buttonText}>{strings.btn_start}</Text>
+                            </TouchableOpacity> 
+                            <Modal 
+                                onBackdropPress={()=>this.toggleLevelModal()}
+                                transparent={true} 
+                                isVisible={this.state.isModalVisible} >                        
+                                {this.renderLevelPopUp()}
+                            </Modal>
 
-                    <TouchableOpacity activeOpacity={true} style={styles.buttonStyle} onPress={()=>this.props.navigation.navigate('FlagQuiz')} > 
-                        <Text style={styles.buttonText}>{strings.btn_start}</Text>
-                    </TouchableOpacity> 
-                    <Modal 
-                        onBackdropPress={()=>this.toggleLevelModal()}
-                        transparent={true} 
-                        isVisible={this.state.isModalVisible} >                        
-                        {this.renderLevelPopUp()}
-                    </Modal>
+                            <Modal 
+                                onBackdropPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}
+                                transparent={true} 
+                                isVisible={this.state.isAboutUsVisible} >                        
+                                {this.renderAboutPopUp()}
+                            </Modal>
 
-                    <Modal 
-                        onBackdropPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}
-                        transparent={true} 
-                        isVisible={this.state.isAboutUsVisible} >                        
-                        {this.renderAboutPopUp()}
-                    </Modal>
-
-                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.setState({ isModalVisible: !this.state.isModalVisible })}> 
-                        <Text style={styles.buttonText}>{strings.btn_level}</Text>
-                    </TouchableOpacity>  
-                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}> 
-                        <Text style={styles.buttonText}>{strings.btn_about_us}</Text>
-                    </TouchableOpacity>  
-                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
-                        <Text style={styles.buttonText}>{strings.btn_share}</Text>
-                    </TouchableOpacity>  
-                    <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle}> 
-                        <Text style={styles.buttonText}>{strings.btn_exit}</Text>
-                    </TouchableOpacity>  
-                </View>
-
+                            <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.setState({ isModalVisible: !this.state.isModalVisible })}> 
+                                <Text style={buttonText}>{strings.btn_level}</Text>
+                            </TouchableOpacity>  
+                            <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.setState({ isAboutUsVisible: !this.state.isAboutUsVisible })}> 
+                                <Text style={buttonText}>{strings.btn_about_us}</Text>
+                            </TouchableOpacity>  
+                            <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
+                                <Text style={buttonText}>{strings.btn_share}</Text>
+                            </TouchableOpacity>  
+                            {/* <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} > 
+                                <Text style={buttonText}>{strings.btn_exit}</Text>
+                            </TouchableOpacity>   */}
+                        </View>
+                        
+                    </Content> 
             </ImageBackground>
             
         );
@@ -107,45 +115,25 @@ export default class MainPage extends Component{
 }
 
 const styles = StyleSheet.create({
-    bgImageStyle:{
-        width:'100%',
-        height:'100%',
-    },
+
     buttonContainer:{
-        flex:1,
         alignItems:'center',
         justifyContent:'center',
     },
     buttonStyle:{
-        marginTop:10,
+        marginTop:15,
         backgroundColor:colors.ButtonBgColor,
         alignItems:'center',
         justifyContent:'center',
-        width:250,
+        width:300,
         height:50,
         borderRadius:25,
         
-    },
-    buttonText:{
-        color:colors.ThemFontColor,
-        fontFamily:globals.FONT_Bold,
-        fontSize:30,
     },
     textStyle:{
         fontFamily:globals.FONT_Bold,
         fontSize:30,
         marginLeft:20,
         padding:10,
-    },
-    titleTextStyle:{
-        fontFamily:globals.FONT_Bold,
-        fontSize:40,
-        padding:10,
-    },
-    modalContainer:{
-        backgroundColor:'#FFFF',
-        padding: 10,
-        marginHorizontal:10,
-        borderRadius: 10,  
     },
 });

@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Text,StyleSheet,TouchableHighlight,ImageBackground} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,ImageBackground} from 'react-native';
 import colors from '../configs/colors'
 import bgImage from '../../assets/images/background.jpg'
 import strings from '../configs/strings';
@@ -7,7 +7,10 @@ import globals from '../configs/globals';
 import { FlatGrid } from 'react-native-super-grid';
 import {Image} from 'react-native-animatable';
 import Modal from "react-native-modal";
+import {Content} from 'native-base';
+import allStyles from './styles';
 
+const {bgImageStyle,modalContainer,titleTextStyle,buttonText,flagImageStyle,bottomView} = allStyles;
 export default class FlagQuiz extends Component{
     
     constructor(props){
@@ -16,6 +19,8 @@ export default class FlagQuiz extends Component{
         this.incorrect=0;
         this.guesses=0;
         this.accuracy=0;
+        this.flagArr=[],
+        this.randomVal=true;
         this.state={
             Qno:1,
             totalQ:10,        
@@ -30,7 +35,6 @@ export default class FlagQuiz extends Component{
             isShowResult:false
         }
         
-        //this.getOptions();
     }
     static navigationOptions =({navigation})=>{
         const { params ={}} = navigation.state;
@@ -41,7 +45,8 @@ export default class FlagQuiz extends Component{
                 backgroundColor:colors.ThemeBgColor,
             },
             headerTitleStyle: {
-                fontFamily:globals.FONT_Bold,
+                fontFamily:globals.FONT_Bold,  
+                fontWeight:undefined,
                 fontSize:30,
               },
             headerTintColor:colors.ThemFontColor,
@@ -51,45 +56,63 @@ export default class FlagQuiz extends Component{
     
     componentDidMount()
     {
-        
+        this.flagArr.push(this.state.FlagData[this.state.CorrectFlag]);
     }
     componentWillMount(){
         
     }
     checkFlag=(value)=>
     {
-                if(this.state.FlagData[this.state.CorrectFlag].answer==value)
-                {
-                    this.setState({isSelect:true,response:'Correct',resColor:'green'});
-                    setTimeout(() => {
-                        this.setFlag();
-                    }, 500);
-                    this.correct=this.correct+1;
-                }   
-                else
-                {
-                    this.setState({isSelect:true,response:'InCorrect',resColor:'red'});
-                    this.state.animationRef.shake();
-                    this.incorrect=this.incorrect+1;
-                } 
+        if(this.state.FlagData[this.state.CorrectFlag].answer==value)
+        {
+            this.setState({isSelect:true,response:'Correct',resColor:'green'});
+            setTimeout(() => {
+                this.setFlag();
+            }, 500);
+            this.correct=this.correct+1;
+        }   
+        else
+        {
+            this.setState({isSelect:true,response:'InCorrect',resColor:'red'});
+            this.state.animationRef.shake();
+            this.incorrect=this.incorrect+1;
+        } 
                    
     }
     setFlag=()=>
     {
-            if(this.state.Qno>=this.state.totalQ)
+        let arr = [];
+        let key;
+        if(this.state.Qno>=this.state.totalQ)
+            this.displayResult();
+        else
+        {            
+            do{
+                this.randomVal=true;
+                arr = globals.shuffleArray(globals.FlagsSource,globals.currentLevel);
+                key = globals.correctFlag(globals.currentLevel);  
+                for(let i = 0 ; i < (this.flagArr.length) ; i++)
+                {
+                    if(this.flagArr[i]==arr[key])
+                    {
+                        this.randomVal=false;                        
+                        break;
+                    }
+                }
+            }while(!this.randomVal);
+
+            if(this.randomVal)
             {
-                this.displayResult();
-                //this.props.navigation.goBack();
-            } 
-            else
-            {
-                this.setState({
+                this.flagArr.push(arr[key]);
+                 this.setState({
                     Qno: this.state.Qno+1,
-                    FlagData:globals.shuffleArray(globals.FlagsSource,globals.currentLevel),
-                    CorrectFlag: globals.correctFlag(globals.currentLevel),
+                    FlagData:arr,
+                    CorrectFlag: key,
                     isSelect:false,
                 });
             }
+            
+        }
        
     }
     displayResult()
@@ -101,8 +124,8 @@ export default class FlagQuiz extends Component{
         });
     }
     renderResultPopUp = () => (
-        <View style={styles.modalContainer} >  
-            <Text style={styles.titleTextStyle} >{strings.txt_quiz_over}</Text>     
+        <View style={modalContainer} >  
+            <Text style={titleTextStyle} >{strings.txt_quiz_over}</Text>     
             <Text style={styles.textStyle} >{`You made ${this.guesses} guesses. \nAccuracy - ${this.accuracy} %\n\nThank you for Playing :)`}</Text> 
             <Text style={[styles.textStyle,{alignSelf:'center'}]} onPress={()=>{this.setState({ isShowResult: !this.state.isShowResult }); this.props.navigation.goBack();} }>{strings.txt_ok}</Text>                       
         </View>
@@ -115,27 +138,27 @@ export default class FlagQuiz extends Component{
         const {CorrectFlag}= this.state;
         
         return(
-            <ImageBackground source={bgImage} style={styles.bgImageStyle}>
-                <View style={styles.Container}>
+            <ImageBackground source={bgImage} style={bgImageStyle}>
+                <Content contentContainerStyle={styles.Container}>
                     <Text style={styles.textStyle}>{strings.txt_question} {Qno} {strings.txt_of} {totalQ}</Text>
-                    <Image style={styles.imageStyle} ref={ref=>(this.state.animationRef=ref)}  duration={2000} source={FlagData[CorrectFlag].source}/>
+                    <Image style={flagImageStyle} ref={ref=>(this.state.animationRef=ref)}  duration={2000} source={FlagData[CorrectFlag].source}/>
                     <Text style={styles.textStyle}>{strings.txt_instruction}</Text>
                     <View style={{height:200}}>
                         <FlatGrid
                             itemDimension={100}
                             items={FlagData}
                             renderItem={({ item, index }) => (
-                                <TouchableHighlight style={styles.buttonContainer} onPress={()=>this.checkFlag(item.answer)}> 
-                                    <Text style={styles.buttonText}>{item.answer}</Text>
-                                </TouchableHighlight>
+                                <TouchableOpacity activeOpacity={0.8} style={styles.buttonContainer} onPress={()=>this.checkFlag(item.answer)}> 
+                                    <Text style={buttonText}>{item.answer}</Text>
+                                </TouchableOpacity>
                             )}
                         />
-                    </View>
-                    <View style={styles.bottomView}>
-                            {(this.state.isSelect) && <Text style={{fontFamily:globals.FONT_Bold,fontSize:30,color:this.state.resColor}}>
-                                                        {this.state.response}</Text> }  
-                    </View>  
-                </View>
+                    </View> 
+                </Content>
+                <View style={bottomView}>
+                        {(this.state.isSelect) && <Text style={{fontFamily:globals.FONT_Bold,fontSize:30,color:this.state.resColor}}>
+                                                    {this.state.response}</Text> }  
+                </View> 
                 <Modal 
                     onBackdropPress={()=>this.setState({ isShowResult: !this.state.isShowResult })}
                     transparent={true} 
@@ -150,13 +173,8 @@ export default class FlagQuiz extends Component{
 
 const styles = StyleSheet.create({
     Container:{
-        flex:1,
         alignItems:'center',
-        top:50,
-    },
-    bgImageStyle:{
-        width:'100%',
-        height:'100%',
+        marginTop:50,
     },
     buttonStyle:{
         marginTop:10,
@@ -166,20 +184,10 @@ const styles = StyleSheet.create({
         width:250,
         height:50,
         borderRadius:10,
-        
     },
     textStyle:{
         fontFamily:globals.FONT_Bold,
         fontSize:30,
-    },
-    buttonText:{
-        fontFamily:globals.FONT_Bold,
-        fontSize:30,
-        color:colors.ThemFontColor,
-    },
-    imageStyle:{
-        width:280,
-        height:200,
     },
     buttonContainer: {
         alignItems:'center',
@@ -188,24 +196,5 @@ const styles = StyleSheet.create({
         padding: 10,
         height: 50,
         backgroundColor:colors.ButtonBgColor 
-      },
-    bottomView:{
-        width: '100%', 
-        height: 50, 
-        justifyContent: 'center', 
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 50
-      },
-      titleTextStyle:{
-        fontFamily:globals.FONT_Bold,
-        fontSize:40,
-        padding:10,
-    },
-    modalContainer:{
-        backgroundColor:'#FFFF',
-        padding: 10,
-        marginHorizontal:10,
-        borderRadius: 10,  
-    }
+      },    
 });

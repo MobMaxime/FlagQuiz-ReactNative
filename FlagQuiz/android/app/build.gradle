@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-exit-app')
     implementation project(':react-native-localization')
     implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])
