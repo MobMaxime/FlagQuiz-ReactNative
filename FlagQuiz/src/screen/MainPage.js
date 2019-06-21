@@ -8,6 +8,7 @@ import Modal from "react-native-modal";
 import { Share } from 'react-native';
 import {Content, Container} from 'native-base';
 import allStyles from './styles';
+import RNExitApp from 'react-native-exit-app';
 
 const {bgImageStyle,modalContainer,titleTextStyle,contentView,buttonText} = allStyles;
 export default class MainPage extends Component{
@@ -38,7 +39,7 @@ export default class MainPage extends Component{
     };
     shareApp=()=>{
         Share.share({
-            message: 'Try this For Learn React-Native',
+            message: 'https://github.com/MobMaxime/FlagQuiz-ReactNative',
             url: 'https://github.com/MobMaxime/FlagQuiz-ReactNative',
             title: 'FlagQuiz'
           }, {
@@ -49,10 +50,6 @@ export default class MainPage extends Component{
               'com.apple.UIKit.activity.PostToTwitter'
             ]
           })
-    }
-    exitApp = ()=>{
-        if(Platform.OS === 'android')
-            BackAndroid.exitApp();
     }
     renderLevelPopUp = () => (
         <View style={modalContainer} >  
@@ -102,9 +99,9 @@ export default class MainPage extends Component{
                             <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>this.shareApp()}> 
                                 <Text style={buttonText}>{strings.btn_share}</Text>
                             </TouchableOpacity>  
-                            {/* <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} > 
+                            <TouchableOpacity activeOpacity={0.8}  style={styles.buttonStyle} onPress={()=>{RNExitApp.exitApp();}} > 
                                 <Text style={buttonText}>{strings.btn_exit}</Text>
-                            </TouchableOpacity>   */}
+                            </TouchableOpacity>  
                         </View>
                         
                     </Content> 
